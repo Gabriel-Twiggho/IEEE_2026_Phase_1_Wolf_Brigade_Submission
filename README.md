@@ -3,9 +3,15 @@
 This repository contains Wolf Brigade's Python submission for the
 [2026 IEEE SMCS Search and Rescue Competition — Phase 1](https://github.com/IEEE-SMCS/2026-ieee-smcs-competition-phase-1).
 
-The evaluation system clones this repository into
-`controllers/proposed_solution`. All commands below assume that placement and
-should be run from that directory.
+## Repository setup
+
+1. Clone this repository and the
+   [official competition repository](https://github.com/IEEE-SMCS/2026-ieee-smcs-competition-phase-1).
+2. Rename this repository's folder to `proposed_solution`.
+3. Replace `controllers/proposed_solution` in the official competition
+   repository with the renamed folder.
+
+All commands below should be run from `controllers/proposed_solution`.
 
 ## Solution overview
 
@@ -80,8 +86,9 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-In Webots, open `Tools > Preferences > General` and set **Python command** to
-the absolute venv interpreter path:
+After installing Webots and creating the venv, open Webots and go to
+`Tools > Preferences > General`. Set **Python command** to the absolute venv
+interpreter path:
 
 - Linux/macOS: `<submission-directory>/.venv/bin/python`
 - Windows: `<submission-directory>\.venv\Scripts\python.exe`
