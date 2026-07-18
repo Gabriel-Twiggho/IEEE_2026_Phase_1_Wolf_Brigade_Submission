@@ -15,7 +15,7 @@ import math
 import os
 from pathlib import Path
 
-from config import SIM_LOGS_DIR, _env_float, _env_flag
+from config import SIM_LOGS_DIR, resolve_runtime_path, _env_float, _env_flag
 from parameters import Coordinator as CoordinatorParams
 from shared_types import PlannedPath, Pose2D
 
@@ -230,9 +230,12 @@ class CoordinatorPlanner:
         self.drone_path = tuple(drone_path or ())
         if not self.drone_path:
             self.drone_path = load_drone_path_csv(
-                drone_path_path or os.environ.get(
-                    "DRONE_PATH_CSV",
-                    str(SIM_LOGS_DIR / "drone_path.csv"),
+                resolve_runtime_path(
+                    drone_path_path
+                    or os.environ.get(
+                        "DRONE_PATH_CSV",
+                        str(SIM_LOGS_DIR / "drone_path.csv"),
+                    )
                 )
             )
         self.victims = tuple((float(v[0]), float(v[1])) for v in (victims or ()))

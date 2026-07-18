@@ -17,7 +17,13 @@ import time
 
 import numpy as np
 
-from config import LIVE_MAP_VIEWER_PATH, _env_float, _env_int, _env_flag
+from config import (
+    LIVE_MAP_VIEWER_PATH,
+    configure_ml_runtime_environment,
+    _env_float,
+    _env_int,
+    _env_flag,
+)
 from parameters import LocalObstacleProjection as LocalObstacleProjectionParams
 from parameters import Victim as VictimParams
 
@@ -347,8 +353,7 @@ class VictimDetector:
         try:
             if not self.model_path.exists():
                 raise FileNotFoundError(self.model_path)
-            os.environ.setdefault("MPLCONFIGDIR", "/tmp/sar-matplotlib")
-            os.environ.setdefault("YOLO_CONFIG_DIR", "/tmp/sar-ultralytics")
+            configure_ml_runtime_environment()
             from ultralytics import YOLO
 
             model = YOLO(str(self.model_path))
@@ -1861,7 +1866,7 @@ class VictimDebugViewer:
 
     def _start_viewer(self):
         script = LIVE_MAP_VIEWER_PATH
-        if not script.exists():
+        if script is None or not script.is_file():
             return
         try:
             self._viewer_process = subprocess.Popen(

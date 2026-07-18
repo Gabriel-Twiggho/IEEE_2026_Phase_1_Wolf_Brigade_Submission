@@ -12,6 +12,7 @@ from extraction.io_utils import (
     infer_run_label,
     load_pipeline_config,
     output_path,
+    resolve_recording_inputs,
 )
 from extraction.map_builder import build_wall_map
 from extraction.map_builder import wall_sample_frames
@@ -27,9 +28,28 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the pre-mission flyover extraction pipeline.",
     )
-    parser.add_argument("--video", type=Path, required=True)
-    parser.add_argument("--imu", type=Path, required=True)
-    parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG_PATH)
+    parser.add_argument(
+        "--video",
+        type=str,
+        required=True,
+        help=(
+            "World name or flyover path. Examples: small_world, "
+            "recordings/small_world, /recordings/small_world, or an explicit "
+            ".mp4 path."
+        ),
+    )
+    parser.add_argument(
+        "--imu",
+        type=str,
+        default=None,
+        help="Optional IMU CSV path; defaults to the CSV beside the resolved video.",
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_CONFIG_PATH,
+        help="Optional pipeline config path; relative paths use the current directory.",
+    )
     parser.add_argument(
         "--debug",
         action="store_true",
@@ -51,14 +71,13 @@ def _print_reload_banner() -> None:
 
 def main() -> None:
     args = parse_args()
-    config = load_pipeline_config(args.config)
+    config_path = args.config.expanduser().resolve()
+    config = load_pipeline_config(config_path)
 
-    video = args.video.expanduser().resolve()
-    imu = args.imu.expanduser().resolve()
-    if not video.exists():
-        raise RuntimeError(f"Video not found: {video}")
-    if not imu.exists():
-        raise RuntimeError(f"IMU CSV not found: {imu}")
+    try:
+        video, imu = resolve_recording_inputs(args.video, args.imu)
+    except RuntimeError as exc:
+        raise SystemExit(f"mission_extraction.py: error: {exc}") from None
 
     run_label = infer_run_label(video, config)
     video_info = read_video_info(video)

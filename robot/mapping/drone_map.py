@@ -5,7 +5,6 @@ from __future__ import annotations
 import csv
 import json
 import os
-from pathlib import Path
 
 from config import (
     CONTROLLER_DIR,
@@ -14,6 +13,7 @@ from config import (
     DRONE_MAP_VICTIMS_PATH,
     SIM_LOGS_DIR,
     SLAM_LITE_DIR,
+    resolve_runtime_path,
     _env_flag,
 )
 from parameters import DroneMap as DroneMapParams
@@ -44,28 +44,28 @@ class DroneExtractionMap:
             bool(render_overlay),
         )
         self.base_dir = CONTROLLER_DIR
-        self.sim_logs_dir = Path(
+        self.sim_logs_dir = resolve_runtime_path(
             os.environ.get("DRONE_MAP_SIM_LOGS_DIR", str(SIM_LOGS_DIR))
         )
-        self.map_path = Path(
+        self.map_path = resolve_runtime_path(
             os.environ.get(
                 "DRONE_MAP_IMAGE",
                 str(self.sim_logs_dir / DRONE_MAP_IMAGE_PATH.name),
             )
         )
-        self.info_path = Path(
+        self.info_path = resolve_runtime_path(
             os.environ.get(
                 "DRONE_MAP_INFO",
                 str(self.sim_logs_dir / DRONE_MAP_INFO_PATH.name),
             )
         )
-        self.victims_path = Path(
+        self.victims_path = resolve_runtime_path(
             os.environ.get(
                 "DRONE_MAP_VICTIMS",
                 str(self.sim_logs_dir / DRONE_MAP_VICTIMS_PATH.name),
             )
         )
-        output_dir = Path(
+        output_dir = resolve_runtime_path(
             os.environ.get("DRONE_MAP_DIR", str(SLAM_LITE_DIR))
         )
         output_dir.mkdir(parents=True, exist_ok=True)

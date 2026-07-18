@@ -1,7 +1,5 @@
 {
-  "data": "/home/haloai/wall_seg_training/Wall_Not_Wall-3",
-  "model": "/home/haloai/wall_seg_training/pretrained/segformer-b1",
-  "out": "/home/haloai/wall_seg_training/runs/wall_segformer_b1_1024x576",
+  "base_model": "segformer-b1",
   "width": 1024,
   "height": 576,
   "epochs": 80,

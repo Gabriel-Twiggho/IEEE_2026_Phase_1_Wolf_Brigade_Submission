@@ -1,9 +1,4 @@
-"""Main launcher for the extracted SAR controller architecture.
-
-The old monolithic controller is archived at
-docs/codemap/old_architecture/proposed_solution.py. This active file now only
-selects a controller mode and starts the flat local robot runtime.
-"""
+"""Select a controller mode and start the flat local robot runtime."""
 
 from __future__ import annotations
 

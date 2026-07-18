@@ -4,10 +4,15 @@ from __future__ import annotations
 
 import math
 import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-from config import SLAM_LITE_DIR, _env_float, _env_flag, _env_int
+from config import (
+    SLAM_LITE_DIR,
+    resolve_runtime_path,
+    _env_float,
+    _env_flag,
+    _env_int,
+)
 from parameters import LiveReplanning as LiveReplanningParams
 from shared_types import LiveMapSnapshot, LiveReplanEvent, PlannedPath, Pose2D
 
@@ -134,7 +139,7 @@ class LiveReplanner:
             and getattr(live_map, "render_enabled", True)
         )
 
-        output_dir = Path(
+        output_dir = resolve_runtime_path(
             os.environ.get(
                 "LIVE_REPLAN_DIR",
                 str(SLAM_LITE_DIR),

@@ -92,18 +92,42 @@ Run the following from `controllers/proposed_solution` before starting the
 corresponding world:
 
 ```bash
-python mission_extraction.py --video ../../recordings/large_world_flyover.mp4 --imu ../../recordings/large_world_flyover.csv
+python mission_extraction.py --video /recordings/small_world
 ```
 
-For another world, replace `large_world` in both input paths with that
-recording's base name. Wait for the `MISSION EXTRACTION COMPLETE` message,
-then reload/open the Webots world so both robots read the new mission files.
+Here, `/recordings/` is a portable shortcut for the official competition
+repository's `recordings` directory; it is not an absolute filesystem path.
+The command finds `small_world_flyover.mp4` and automatically uses the sibling
+`small_world_flyover.csv` IMU file. The following forms are also accepted:
+
+- `--video small_world`
+- `--video recordings/small_world`
+- `--video /recordings/small_world_flyover.mp4`
+- `--video /an/explicit/path/small_world_flyover.mp4`
+
+Use `--imu /an/explicit/path/file.csv` only when the IMU file does not share
+the resolved video's base name. Wait for the `MISSION EXTRACTION COMPLETE`
+message, then reload/open the Webots world so both robots read the new mission
+files.
 
 Add `--debug` only when diagnostic images and detailed detection files are
 needed:
 
 ```bash
-python mission_extraction.py --video ../../recordings/large_world_flyover.mp4 --imu ../../recordings/large_world_flyover.csv --debug
+python mission_extraction.py --video /recordings/small_world --debug
+```
+
+When running this submission outside the official repository layout, point it
+at a recordings directory once:
+
+```bash
+export SAR_RECORDINGS_DIR=/path/to/2026-ieee-smcs-competition-phase-1/recordings
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:SAR_RECORDINGS_DIR = "C:\path\to\2026-ieee-smcs-competition-phase-1\recordings"
 ```
 
 The preprocessing command writes:

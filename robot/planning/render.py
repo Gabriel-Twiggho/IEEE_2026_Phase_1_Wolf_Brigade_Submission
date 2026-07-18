@@ -330,7 +330,7 @@ def _draw_debug_cell(draw, fx: int, fy: int, cell_px: int, colour, radius: int):
 
 def start_viewer(image_path, title: str, error_prefix: str):
     script = LIVE_MAP_VIEWER_PATH
-    if not script.exists():
+    if script is None or not script.is_file():
         return None
     try:
         process = subprocess.Popen(

@@ -6,9 +6,8 @@ import heapq
 import math
 import os
 import time
-from pathlib import Path
 
-from config import SLAM_LITE_DIR, _env_float, _env_flag
+from config import SLAM_LITE_DIR, resolve_runtime_path, _env_float, _env_flag
 from parameters import EscapePlanning as EscapePlanningParams
 from parameters import Planning as PlanningParams
 from robot.mapping.drone_map import DroneExtractionMap
@@ -132,7 +131,7 @@ class PathPlanner:
             self.inflation_radius_m,
             _env_float("SAFETY_ESCAPE_GOAL_CLEARANCE_M", self.ESCAPE_GOAL_CLEARANCE_M),
         )
-        output_dir = Path(
+        output_dir = resolve_runtime_path(
             os.environ.get(
                 "PATH_PLANNER_DIR",
                 str(SLAM_LITE_DIR),

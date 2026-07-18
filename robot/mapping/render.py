@@ -484,7 +484,7 @@ def _draw_route_debug_panel(
 
 def start_viewer(image_path, title: str, error_prefix: str):
     script = LIVE_MAP_VIEWER_PATH
-    if not script.exists():
+    if script is None or not script.is_file():
         return None
     try:
         process = subprocess.Popen(

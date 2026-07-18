@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import math
 import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
-from config import SLAM_LITE_DIR, _env_float, _env_flag
+from config import SLAM_LITE_DIR, resolve_runtime_path, _env_float, _env_flag
 from parameters import LiveMap as LiveMapParams
 from robot.mapping.local_obstacles import LocalObstacleLayer
 from robot.sensing import TerrainAwarenessLayer
@@ -183,7 +182,7 @@ class LiveOccupancyGridMapper:
         self.pose_offset_y = 0.0
         self.pose_offset_yaw = 0.0
 
-        output_dir = Path(
+        output_dir = resolve_runtime_path(
             os.environ.get(
                 "LIVE_MAP_DIR",
                 str(SLAM_LITE_DIR),

@@ -3,7 +3,6 @@ from __future__ import annotations
 import csv
 import json
 import math
-import os
 import sys
 import warnings
 from pathlib import Path
@@ -12,6 +11,7 @@ from typing import Any
 import cv2
 import numpy as np
 
+from config import configure_ml_runtime_environment
 from ..drone_path.camera_model import load_camera_intrinsics
 from ..io_utils import ensure_parent
 from ..progress import ProgressBar
@@ -19,8 +19,7 @@ from ..video_reader import read_cached_frame
 
 
 def _load_yolo_class():
-    os.environ.setdefault("MPLCONFIGDIR", "/tmp/sar-matplotlib")
-    os.environ.setdefault("YOLO_CONFIG_DIR", "/tmp/sar-ultralytics")
+    configure_ml_runtime_environment()
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",

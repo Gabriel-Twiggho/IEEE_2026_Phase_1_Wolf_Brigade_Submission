@@ -7,7 +7,6 @@ import csv
 import json
 import math
 import os
-from pathlib import Path
 import time
 import traceback
 
@@ -15,6 +14,7 @@ from config import (
     GROUND_VICTIM_MODEL_PATH,
     REPO_ROOT,
     VICTIM_DIAGNOSTICS_DIR,
+    resolve_runtime_path,
     _env_flag,
     _env_float,
 )
@@ -88,7 +88,9 @@ class ControllerTickProfiler:
             / "controller_profile"
             / f"{robot_id}_profile.csv"
         )
-        self.path = Path(os.environ.get("SAR_PROFILE_PATH", default_path))
+        self.path = resolve_runtime_path(
+            os.environ.get("SAR_PROFILE_PATH", default_path)
+        )
         self.trace_path = self.path.with_suffix(".trace.txt")
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.file = self.path.open("w", newline="", encoding="utf-8", buffering=1)
@@ -303,7 +305,7 @@ class Robot1FlatRuntime:
             "VICTIM_ID_ENABLED",
             VictimParams.DETECTOR_ENABLED,
         )
-        model_path = Path(
+        model_path = resolve_runtime_path(
             os.environ.get(
                 "VICTIM_MODEL_PATH",
                 str(GROUND_VICTIM_MODEL_PATH),

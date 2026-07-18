@@ -5,13 +5,19 @@ from __future__ import annotations
 import atexit
 import math
 import os
-from pathlib import Path
 import subprocess
 import sys
 
 import numpy as np
 
-from config import LIVE_MAP_VIEWER_PATH, SLAM_LITE_DIR, _env_float, _env_int, _env_flag
+from config import (
+    LIVE_MAP_VIEWER_PATH,
+    SLAM_LITE_DIR,
+    resolve_runtime_path,
+    _env_float,
+    _env_int,
+    _env_flag,
+)
 from parameters import DepthViewer as DepthViewerParams
 from parameters import Localisation as LocalisationParams
 from parameters import LocalObstacleProjection as LocalObstacleProjectionParams
@@ -691,7 +697,7 @@ class AnnotatedDepthViewer:
             0.05,
             _env_float("DEPTH_DEBUG_VIEWER_INTERVAL_S", self.UPDATE_INTERVAL_S),
         )
-        output_dir = Path(
+        output_dir = resolve_runtime_path(
             os.environ.get(
                 "DEPTH_DEBUG_VIEWER_DIR",
                 str(SLAM_LITE_DIR),
@@ -870,7 +876,7 @@ class AnnotatedDepthViewer:
 
     def _start_viewer(self):
         script = LIVE_MAP_VIEWER_PATH
-        if not script.exists():
+        if script is None or not script.is_file():
             return
         try:
             self._viewer_process = subprocess.Popen(
