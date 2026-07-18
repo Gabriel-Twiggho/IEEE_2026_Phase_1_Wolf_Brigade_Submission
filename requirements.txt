@@ -1,7 +1,10 @@
+# Python 3.10+ is required by the pinned ML stack and the source syntax.
 numpy==2.2.6
 Pillow==12.2.0
 scipy==1.15.3
 torch==2.12.0
 torchvision==0.27.0
 opencv-python==4.13.0.92
-ultralytics==8.4.54
+ultralytics==8.4.75
+transformers==5.12.1
+safetensors==0.8.0
