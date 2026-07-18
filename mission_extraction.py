@@ -33,9 +33,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=str,
         required=True,
         help=(
-            "World name or flyover path. Examples: small_world, "
-            "recordings/small_world, /recordings/small_world, or an explicit "
-            ".mp4 path."
+            "Flyover video filename or path. Examples: "
+            "recordings/YOUR_VIDEO_FILE.mp4, "
+            "/recordings/YOUR_VIDEO_FILE.mp4, or an explicit .mp4 path."
         ),
     )
     parser.add_argument(

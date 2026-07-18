@@ -3,72 +3,48 @@
 This repository contains Wolf Brigade's Python submission for the
 [2026 IEEE SMCS Search and Rescue Competition — Phase 1](https://github.com/IEEE-SMCS/2026-ieee-smcs-competition-phase-1).
 
-## Repository setup
+## How to install and run
 
-1. Clone this repository and the
-   [official competition repository](https://github.com/IEEE-SMCS/2026-ieee-smcs-competition-phase-1).
-2. Rename this repository's folder to `proposed_solution`.
-3. Replace `controllers/proposed_solution` in the official competition
-   repository with the renamed folder.
+Follow these steps in order.
 
-All commands below should be run from `controllers/proposed_solution`.
-
-## Solution overview
-
-The solution has two connected stages:
-
-1. **Flyover information extraction**
-   - Estimates the UAV path from IMU data and the origin mat's ArUco markers.
-   - Detects victims with a bundled Ultralytics YOLO segmentation model,
-     projects detections into the competition reference frame, and fuses
-     repeated observations.
-   - Segments walls with a bundled SegFormer model and projects the results
-     into the required binary `600 x 600` map.
-2. **Two-robot autonomous mission**
-   - Uses `proposed_solution.py` as the Webots controller entrypoint.
-   - Seeds planning from the extracted wall map, victim estimates, and UAV
-     path.
-   - Balances victim assignments between both ROSbots and plans routes with
-     map-aware, UAV-corridor-weighted A*.
-   - Combines wheel/compass odometry, lidar, RGB-D and infrared sensing for
-     live mapping, replanning, terrain handling, collision avoidance and local
-     recovery.
-   - Confirms victims with a second bundled YOLO segmentation model plus depth
-     measurements, then sends an exactly-once supervisor report.
-
-All model weights are included under `models/`; no model download or external
-API is required at runtime.
-
-## Main files
-
-| Path | Purpose |
-| --- | --- |
-| `proposed_solution.py` | Required Webots controller entrypoint |
-| `mission_extraction.py` | One-command flyover preprocessing entrypoint |
-| `requirements.txt` | Exact pip dependency versions |
-| `extraction/` | UAV path, victim-location and wall-map extraction |
-| `coordinator/` | Two-robot assignment, route planning and coordination |
-| `robot/` | Sensing, mapping, navigation, safety and victim reporting |
-| `models/` | Bundled ground-victim, drone-victim and wall models |
-| `parameters.py` | Human-facing ground-controller defaults |
-| `extraction/config/` | Flyover pipeline configuration |
-
-## Environment requirements
+### 1. Install the required software
 
 - Webots **R2025a**
-- Python **3.10.12** (Python 3.10 or newer is required)
-- Git LFS for cloning the official competition repository and its recordings
-- A CUDA-capable NVIDIA GPU is recommended for real-time model inference;
-  CPU execution is supported but slower
+- Python **3.10.12** or another Python 3.10+ version
+- Git and Git LFS
+- An NVIDIA GPU
 
-The Webots `controller` module is supplied by Webots and must not be installed
-from PyPI.
+### 2. Put this solution in the test repository
 
-## Environment setup
+The final evaluation uses an unseen test repository and unseen worlds. Use the
+same folder placement with any test repository you have been given:
 
-Create the virtual environment inside `controllers/proposed_solution`.
+Set up Git LFS once:
 
-### Linux or macOS
+```bash
+git lfs install
+```
+
+Clone this repository directly with the required folder name:
+
+```bash
+git clone https://github.com/Gabriel-Twiggho/IEEE_2026_Phase_1_Wolf_Brigade_Submission.git proposed_solution
+```
+
+Replace the test repository's existing `controllers/proposed_solution` folder
+with the newly cloned `proposed_solution` folder.
+
+Leave every other file and folder in the test repository unchanged. Make sure
+`proposed_solution.py`, `mission_extraction.py`, `requirements.txt`, and the
+rest of this submission are directly inside that folder, without an extra
+nested repository folder.
+
+Open a terminal in `controllers/proposed_solution`. Run all remaining terminal
+commands from this directory.
+
+### 3. Create the Python virtual environment
+
+#### Linux or macOS
 
 ```bash
 python3.10 -m venv .venv
@@ -77,7 +53,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-### Windows
+#### Windows PowerShell
 
 ```powershell
 py -3.10 -m venv .venv
@@ -86,97 +62,130 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-After installing the requirements, run:
+The Webots `controller` module is supplied by Webots and should not be
+installed from PyPI.
+
+### 4. Tell Webots to use the virtual environment
+
+With the venv activated, print its full Python path:
 
 ```bash
-python -m pip install --force-reinstall torch==2.12.0 torchvision==0.27.0 --index-url https://download.pytorch.org/whl/cu132
+python -c "import sys; print(sys.executable)"
 ```
 
-After installing Webots and creating the venv, open Webots and go to
-`Tools > Preferences > General`. Set **Python command** to the absolute venv
-interpreter path:
+Copy the printed path. In Webots, open
+`Tools > Preferences > General`, set **Python command** to that path, and save
+the settings.
 
-- Linux/macOS: `<submission-directory>/.venv/bin/python`
-- Windows: `<submission-directory>\.venv\Scripts\python.exe`
+### 5. Process the flyover recording
 
-## Required flyover preprocessing command
-
-Run the following from `controllers/proposed_solution` before starting the
-corresponding world:
+Look inside the test repository's `recordings` folder and use the exact name
+of its `.mp4` file. Replace `YOUR_VIDEO_FILE.mp4` below with that filename:
 
 ```bash
-python mission_extraction.py --video /recordings/small_world
+python mission_extraction.py --video /recordings/YOUR_VIDEO_FILE.mp4
 ```
 
-Here, `/recordings/` is a portable shortcut for the official competition
-repository's `recordings` directory; it is not an absolute filesystem path.
-The command finds `small_world_flyover.mp4` and automatically uses the sibling
-`small_world_flyover.csv` IMU file. The following forms are also accepted:
+`/recordings/` is a shortcut for the `recordings` folder in whichever test
+repository contains this solution. It is not an absolute filesystem path and
+does not depend on a specific world name.
 
-- `--video small_world`
-- `--video recordings/small_world`
-- `--video /recordings/small_world_flyover.mp4`
-- `--video /an/explicit/path/small_world_flyover.mp4`
+If the IMU file has the same filename as the video, the pipeline selects it
+automatically. For example, `YOUR_VIDEO_FILE.mp4` will use
+`YOUR_VIDEO_FILE.csv`.
 
-Use `--imu /an/explicit/path/file.csv` only when the IMU file does not share
-the resolved video's base name. Wait for the `MISSION EXTRACTION COMPLETE`
-message, then reload/open the Webots world so both robots read the new mission
-files.
-
-Add `--debug` only when diagnostic images and detailed detection files are
-needed:
+If the IMU CSV has a different filename, provide both names:
 
 ```bash
-python mission_extraction.py --video /recordings/small_world --debug
+python mission_extraction.py --video /recordings/YOUR_VIDEO_FILE.mp4 --imu /recordings/YOUR_IMU_FILE.csv
 ```
 
-When running this submission outside the official repository layout, point it
-at a recordings directory once:
+If the `/recordings/` shortcut does not work, use full absolute paths.
+
+Linux or macOS:
 
 ```bash
-export SAR_RECORDINGS_DIR=/path/to/2026-ieee-smcs-competition-phase-1/recordings
+python mission_extraction.py --video "/full/path/to/YOUR_VIDEO_FILE.mp4" --imu "/full/path/to/YOUR_IMU_FILE.csv"
 ```
 
-On Windows PowerShell:
+Windows PowerShell:
 
 ```powershell
-$env:SAR_RECORDINGS_DIR = "C:\path\to\2026-ieee-smcs-competition-phase-1\recordings"
+python mission_extraction.py --video "C:\full\path\to\YOUR_VIDEO_FILE.mp4" --imu "C:\full\path\to\YOUR_IMU_FILE.csv"
 ```
 
-The preprocessing command writes:
+Wait until `MISSION EXTRACTION COMPLETE` is displayed. The command creates:
 
-| Output | Consumer |
+| Output | Purpose |
 | --- | --- |
-| `sim_logs/victim_location_estimates.csv` | Official extraction scorer and robot coordinator |
-| `sim_logs/map_estimate.png` | Official extraction scorer and robot path planner |
-| `sim_logs/drone_path.csv` | UAV-corridor route planner |
-| `sim_logs/map_estimate_info.json` | Map geometry loader |
+| `sim_logs/victim_location_estimates.csv` | Victim estimates for scoring and robot planning |
+| `sim_logs/map_estimate.png` | Wall map for scoring and robot planning |
+| `sim_logs/drone_path.csv` | UAV path used by the route planner |
+| `sim_logs/map_estimate_info.json` | Map geometry used by the robots |
 
-## Running the autonomous mission
+Add `--debug` to the command only if diagnostic images are required.
 
-1. Complete flyover preprocessing for the selected world.
-2. Confirm that Webots is configured to use the venv interpreter.
-3. Open the selected official `.wbt` world in Webots.
-4. Start the simulation.
+### 6. Start the autonomous mission
 
-Webots automatically launches `proposed_solution.py` for both ROSbots. The
-default `normal` mode enables autonomous coordination, navigation, victim
-confirmation and reporting. Do not run `proposed_solution.py` directly from a
-normal terminal because the Webots-provided `controller` module and simulated
-devices are only available in a Webots controller process.
+1. Open the matching `.wbt` world from the test repository's `worlds` folder
+   in Webots.
+2. Reload the world if it was already open when extraction completed.
+3. Start the simulation.
 
-For a CPU-only ground-controller run, set the following environment variable
-before launching Webots:
+Webots automatically launches `proposed_solution.py` for both ROSbots. Do not
+run `proposed_solution.py` directly from a normal terminal.
 
-```bash
-export VICTIM_MODEL_DEVICE=cpu
-```
+## Solution overview
 
-On Windows PowerShell:
+The solution has two connected stages:
 
-```powershell
-$env:VICTIM_MODEL_DEVICE = "cpu"
-```
+1. **Flyover information extraction**
+   - Estimates the UAV path from IMU data and the origin mat's ArUco markers.
+   - Detects victims with a bundled Ultralytics YOLO segmentation model.
+   - Segments walls with a bundled SegFormer model and creates the required
+     binary `600 x 600` map.
+2. **Two-robot autonomous mission**
+   - Seeds planning from the extracted wall map, victim estimates and UAV
+     path.
+   - Balances victim assignments between both ROSbots.
+   - Uses mapping, replanning, terrain handling and collision avoidance while
+     searching for victims.
+   - Confirms victims using a second bundled YOLO model and depth data before
+     reporting them.
 
-The flyover extraction configuration defaults to CUDA but automatically falls
-back to CPU if CUDA is unavailable.
+All model weights are included under `models/`; no model download or external
+API is required at runtime.
+
+## Test world results
+
+### Small world
+
+**Overall score:** 0.872/1.000 · **Victims found:** 4 · **Time taken:** 115.6 s
+
+![Small world test run](media/small_world.gif)
+
+### Medium world
+
+**Overall score:** 0.681/1.000 · **Victims found:** 4 · **Time taken:** 164.4 s
+
+![Medium world test run](media/medium_world.gif)
+
+### Large world
+
+**Overall score:** 0.763/1.000 · **Victims found:** 5 · **Time taken:** 119.1 s
+
+![Large world test run](media/large_world.gif)
+
+## Main files
+
+| Path | Purpose |
+| --- | --- |
+| `proposed_solution.py` | Webots controller entrypoint |
+| `mission_extraction.py` | Flyover preprocessing entrypoint |
+| `requirements.txt` | Python dependency versions |
+| `extraction/` | UAV path, victim and wall-map extraction |
+| `coordinator/` | Two-robot assignment and route planning |
+| `robot/` | Sensing, mapping, navigation and victim reporting |
+| `models/` | Bundled victim and wall models |
+| `parameters.py` | Ground-controller defaults |
+| `extraction/config/` | Flyover extraction settings |

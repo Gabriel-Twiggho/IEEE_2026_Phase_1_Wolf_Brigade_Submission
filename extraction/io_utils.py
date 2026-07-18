@@ -38,7 +38,7 @@ def _validated_recordings_relative(
     if not relative:
         raise RuntimeError(
             f"{shortcut} must include a recording name, such as "
-            f"{shortcut.rstrip('/')}/small_world."
+            f"{shortcut.rstrip('/')}/YOUR_VIDEO_FILE.mp4."
         )
 
     path = Path(relative)
