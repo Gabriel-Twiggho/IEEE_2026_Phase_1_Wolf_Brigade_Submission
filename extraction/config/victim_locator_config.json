@@ -1,0 +1,14 @@
+{
+  "confidence_threshold": 0.70,
+  "skip_seconds": 3.5,
+  "frame_step": 8,
+  "merge_distance_m": 0.90,
+  "min_detections": 10,
+  "default_height_m": 2.5,
+  "max_aruco_height_delta_m": 0.10,
+  "image_forward_sign": -1.0,
+  "image_left_sign": -1.0,
+  "max_detections": 20,
+  "device": "cuda",
+  "save_annotated_frames": false
+}

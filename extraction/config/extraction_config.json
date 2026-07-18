@@ -1,0 +1,25 @@
+{
+  "altitude_mode": "imu",
+  "paths": {
+    "camera_intrinsics": "extraction/config/camera_intrinsics.json",
+    "drone_victim_model": "models/drone_v2.pt",
+    "wall_model": "models/segformer_wall",
+    "sim_logs": "sim_logs",
+    "debug": "sim_logs/debug"
+  },
+  "task_configs": {
+    "drone_path": "extraction/config/drone_path_config.json",
+    "victim_locator": "extraction/config/victim_locator_config.json",
+    "map_builder": "extraction/config/map_builder_config.json"
+  },
+  "outputs": {
+    "victim_estimates": "sim_logs/victim_location_estimates.csv",
+    "map_estimate": "sim_logs/map_estimate.png",
+    "drone_path_csv": "sim_logs/drone_path.csv",
+    "map_estimate_info": "sim_logs/map_estimate_info.json",
+    "detailed_victims_csv": "sim_logs/debug/victim_detections.csv",
+    "detailed_victims_json": "sim_logs/debug/victim_detections.json",
+    "drone_path_plot": "sim_logs/debug/drone_path.png",
+    "victim_plot": "sim_logs/debug/victims.png"
+  }
+}

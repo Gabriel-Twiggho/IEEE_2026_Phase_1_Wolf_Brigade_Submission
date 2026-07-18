@@ -1,0 +1,13 @@
+{
+  "aruco_frame_step": 5,
+  "aruco_scan_start_seconds": 0.0,
+  "aruco_scan_end_seconds": 5.0,
+  "aruco_marker_size_m": 0.25,
+  "aruco_height_stable_after_seconds": 3.0,
+  "aruco_min_height_m": 1.0,
+  "aruco_max_height_m": 4.0,
+  "imu_altitude_end_seconds": 3.5,
+  "imu_altitude_gravity_mode": "zero_velocity_at_end",
+  "imu_altitude_gravity_mps2": null,
+  "aruco_dictionaries": ["DICT_4X4_50", "DICT_4X4_100", "DICT_5X5_50", "DICT_5X5_100"]
+}
