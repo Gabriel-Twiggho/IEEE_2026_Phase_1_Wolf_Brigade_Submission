@@ -86,6 +86,12 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
+After installing the requirements, run:
+
+```bash
+python -m pip install --force-reinstall torch==2.12.0 torchvision==0.27.0 --index-url https://download.pytorch.org/whl/cu132
+```
+
 After installing Webots and creating the venv, open Webots and go to
 `Tools > Preferences > General`. Set **Python command** to the absolute venv
 interpreter path:
