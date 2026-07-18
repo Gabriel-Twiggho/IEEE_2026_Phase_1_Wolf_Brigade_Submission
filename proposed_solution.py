@@ -105,7 +105,7 @@ def _png_output_default(name: str, benchmark_mode: bool):
 def apply_visual_defaults(robot_id: str, options: RuntimeOptions):
     """
     Set default viewer/render env vars before Robot1FlatRuntime constructs modules.
-
+    #Gabriel twigg-ho Krish
     These are setdefault() calls: shell env vars still win.  Examples:
       LIVE_MAP_VIEWER=0 disables the local live-map viewer for that robot.
       LIVE_MAP_RENDER=0 disables the local live-map PNG writer for that robot.

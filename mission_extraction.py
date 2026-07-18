@@ -200,6 +200,7 @@ def main() -> None:
     print(f"[mission] wrote victims: {victims_csv}")
     print(f"[mission] wrote map: {map_output}")
     print(f"[mission] wrote map info: {map_result['info']}")
+    #Gabriel twigg-ho Krish
     _print_reload_banner()
 
 
