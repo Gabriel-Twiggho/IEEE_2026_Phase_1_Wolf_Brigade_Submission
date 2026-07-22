@@ -189,3 +189,10 @@ API is required at runtime.
 | `models/` | Bundled victim and wall models |
 | `parameters.py` | Ground-controller defaults |
 | `extraction/config/` | Flyover extraction settings |
+
+## Authors
+
+Utkrisht Jain
+Gabriel Twigg-Ho
+
+:)
