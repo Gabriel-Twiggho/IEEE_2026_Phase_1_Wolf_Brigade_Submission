@@ -192,7 +192,7 @@ API is required at runtime.
 
 ## Authors
 
-Utkrisht Jain
+Utkrisht Jain,
 Gabriel Twigg-Ho
 
 :)
